@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load staticfiles %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>研讨室申请处理 - 宿舍管理系统</title>
+
+    <link rel="icon" href={% static 'bootstrap/image/favicon.ico' %}>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/admin.css' %}" rel="stylesheet" type="text/css">
+
+    <style>
+        .red {
+            color: red;
+        }
+
+        .table tbody tr td {
+            vertical-align: middle;
+        }
+
+        .table-detail tbody tr td, .table-detail thead tr th {
+            padding: 4px;
+            font-size: 12px;
+            text-align: center;
+
+        }
+    </style>
+
+</head>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">学生宿舍管理系统</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="info_admin.html"><span class="glyphicon glyphicon-user"></span> {{ username }} 老师</a></li>
+                <li><a data-toggle="modal" data-target="#logout">注销</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a href="/show_admin_index">宿舍退调申请处理<span class="sr-only">(current)</span></a></li>
+                <li><a href="/show_admin_repair_index">宿舍报修申请处理</a></li>
+                <li><a href="/show_admin_resource_index">宿舍资源申请处理</a></li>
+                <li class="active"><a href="/show_admin_meeting_index">研讨室申请处理</a></li>
+                <li><a href="/show_admin_activity_index">社区活动申请处理</a></li>
+                <li><a href="/show_admin_book_index">共享书屋</a></li>
+                <li><a href="/show_admin_search_index">宿生信息检索</a></li>
+                <li><a href="/show_admin_checkin_index">入宿处理</a></li>
+                <li><a href="/show_admin_set_time_index">留校时间段设置</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">
+                研讨室申请处理
+            </h1>
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#needToDealt" data-toggle="tab">
+                        待办事项
+                    </a>
+                </li>
+                <li>
+                    <a href="#log" data-toggle="tab">
+                        记录
+                    </a>
+                </li>
+                <li>
+                    <a href="#meetingCheck" data-toggle="tab">
+                        研讨室查看
+                    </a>
+                </li>
+            </ul>
+            <div role="tabpanel" class="tab-content" style="margin-top: 10px">
+                <!--待办事项 panel-->
+                <div class="tab-pane in active" id="needToDealt">
+                    <form action="/show_admin_meeting/" id="meetingRequestList" method="post">
+                        {% csrf_token %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>申请人</th>
+                                    <th>学号</th>
+                                    <th>研讨室</th>
+                                    <th>申请时间</th>
+                                    <th>预约日期</th>
+                                    <th>开始时间</th>
+                                    <th>结束时间</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in toDealtList %}
+                                    <tr>
+                                        <td>{{ i.sname }}</td>
+                                        <td>{{ i.sno }}</td>
+                                        <td>{{ i.meeting_room_no }}</td>
+                                        <td>{{ i.apply_time }}</td>
+                                        <td>{{ i.book_date }}</td>
+                                        <td>{{ i.time_start }}</td>
+                                        <td>{{ i.time_end }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal"
+                                                    data-target="#adminDealtMeeting" onclick="btn_handle_check(this)">
+                                                查看及处理
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <div class="pull-right">
+                                <ul class="pagination">
+                                    <li>
+                                        <a href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>
+                                    <li><a href="#">5</a></li>
+                                    <li>
+                                        <a href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--记录 panel-->
+                <div class="tab-pane" id="log">
+                    <form action="/show_admin_meeting/" id="meetingRequestList" method="post">
+                        {% csrf_token %}
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>申请人</th>
+                                    <th>学号</th>
+                                    <th>研讨室</th>
+                                    <th>申请时间</th>
+                                    <th>预约日期</th>
+                                    <th>开始时间</th>
+                                    <th>结束时间</th>
+                                    <th>申请状态</th>
+                                    <th>详情</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in applyList %}
+                                    <tr>
+                                        <td>{{ i.sname }}</td>
+                                        <td>{{ i.sno }}</td>
+                                        <td>{{ i.meeting_room_no }}</td>
+                                        <td>{{ i.apply_time }}</td>
+                                        <td>{{ i.book_date }}</td>
+                                        <td>{{ i.time_start }}</td>
+                                        <td>{{ i.time_end }}</td>
+                                        <td>
+                                            <label class="label label-default">{{ i.check_apply_success }}</label>
+                                        </td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal"
+                                                    data-target="#adminMeetingLog" onclick="btn_record(this)">
+                                                查看
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                            <div class="pull-right">
+                                <ul class="pagination">
+                                    <li>
+                                        <a href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>
+                                    <li><a href="#">5</a></li>
+                                    <li>
+                                        <a href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!--研讨室查看 panel-->
+                <div class="tab-pane" id="meetingCheck">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>研讨室</th>
+                                <th>大小（容量/人）</th>
+                                <th>多媒体设备</th>
+                                <th>描述</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody id="date_table_body">
+                            {% for i in roomList %}
+                                <tr>
+                                    <td>{{ i.meeting_room_no }}</td>
+                                    <td>{{ i.meeting_room_size }}</td>
+                                    <td>{{ i.include_medium_device }}</td>
+                                    <td class="desc">{{ i.meeting_room_description }}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal"
+                                                data-target="#meetingDetail" onclick="btn_info(this)">查看
+                                        </button>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="pull-right">
+                        <ul class="pagination">
+                            <li>
+                                <a href="#" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <li class="active"><a href="#">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                            <li><a href="#">4</a></li>
+                            <li><a href="#">5</a></li>
+                            <li>
+                                <a href="#" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--待办事项modal-->
+<div class="modal fade" tabindex="-1" role="dialog" id="adminDealtMeeting" data-backdrop="static">
+    <div class="modal-dialog" style="width:auto; max-width:1000px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                        class="sr-only">关闭</span></button>
+                <h4 class="modal-title">研讨室申请处理</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">学号:</label>
+                                <label class="control-label" id="dealt_sno"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">姓名:</label>
+                                <label class="control-label" id="dealt_sname"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">申请时间:</label>
+                                <label class="control-label" id="dealt_apply_time"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">学院:</label>
+                                <label class="control-label" id="dealt_college"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">专业:</label>
+                                <label class="control-label" id="dealt_major"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">宿舍:</label>
+                                <label class="control-label" id="dealt_dor_room"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">联系电话:</label>
+                                <label class="control-label" id="dealt_phone_no"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">邮箱:</label>
+                                <label class="control-label" id="dealt_email"></label>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">备注:</label>
+                                <p class="control-label" id="dealt_stu_remark"></p>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <hr/>
+                <form>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">研讨室:</label>
+                                <label class="control-label" id="dealt_meeting_room_no"></label>
+                            </div>
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">预约时间段:</label>
+                                <label class="control-label" id="dealt_book_time"></label>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">操作:</label>
+                                <select class="combobox" id="dealt_select">
+                                    <option value="0"></option>
+                                    <option value="1">同意申请</option>
+                                    <option value="2">不同意申请</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">备注:</label>
+                                <textarea class="form-control" id="dealt_ad_remark"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button class="btn btn-success" onclick="btn_handle(this)">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--记录modal-->
+<div class="modal fade" tabindex="-1" role="dialog" id="adminMeetingLog" data-backdrop="static">
+    <div class="modal-dialog" style="width:auto; max-width:1000px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                        class="sr-only">关闭</span></button>
+                <h4 class="modal-title">申请记录查看</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">学号:</label>
+                                <label class="control-label" id="record_sno"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">姓名:</label>
+                                <label class="control-label" id="record_sname"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">申请时间:</label>
+                                <label class="control-label" id="record_apply_time"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">学院:</label>
+                                <label class="control-label" id="record_college"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">专业:</label>
+                                <label class="control-label" id="record_major"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">宿舍:</label>
+                                <label class="control-label" id="record_dor_room"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">联系电话:</label>
+                                <label class="control-label" id="record_phone_no"></label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">邮箱:</label>
+                                <label class="control-label" id="record_email"></label>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">备注:</label>
+                                <p class="control-label" id="record_remark"></p>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+                <hr/>
+                <form>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">研讨室:</label>
+                                <label class="control-label" id="record_meeting_room_no"></label>
+                            </div>
+                        </div>
+                        <div class="col-lg-9 col-md-9 col-sm-8 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">预约时间段:</label>
+                                <label class="control-label" id="record_book_time"></label>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">申请状态:</label>
+                                <label class="label label-success" id="record_status"></label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--注销modal-->
+<div class="modal fade" tabindex="-1" role="dialog" id="logout" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                        class="sr-only">关闭</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>是否注销？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <a href="../index.html">
+                    <button type="button" class="btn btn-primary">确定</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="meetingDetail">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="detail_room_no"></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover table-detail">
+                            <thead>
+                            <tr>
+                                <th>时间段编号</th>
+                                <th>时间</th>
+                                <th id="detail_today"></th>
+                                <th id="detail_tomorrow"></th>
+                            </tr>
+                            </thead>
+                            <tbody id="date_table_body2">
+                            <tr>
+                                <td>1</td>
+                                <td>08:00-09:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+
+                            <tr>
+                                <td>2</td>
+                                <td>09:00-10:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>10:00-11:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>11:00-12:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>12:00-13:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>6</td>
+                                <td>13:00-14:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>7</td>
+                                <td>14:00-15:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>8</td>
+                                <td>15:00-16:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>9</td>
+                                <td>16:00-17:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>10</td>
+                                <td>17:00-18:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>11</td>
+                                <td>18:00-19:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>12</td>
+                                <td>19:00-20:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>13</td>
+                                <td>20:00-21:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>14</td>
+                                <td>21:00-22:00</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal - 查看 -->
+
+<script type="text/javascript" src="{% static 'bootstrap/js/jquery-2.2.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap/js/holder.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+</body>
+
+</html>
+
+<script>
+    function btn_info(obj) {
+        var room_no = $(obj).parent().parent().find('td').eq(0).text()
+        var sendData = {
+            meeting_room_no: room_no,
+            book_date: getNowDate()
+        }
+        $('#detail_room_no').text('研讨室' + room_no)
+        $('#detail_today').text(getDateStr(0))
+        $('#detail_tomorrow').text(getDateStr(1))
+        $.ajax({
+            url: "/dor/admin_handle/meeting_room_handle/show_meeting_room_info",
+            type: 'GET',
+            data: sendData,
+            success: function (dataList) {
+                var lent = $('#date_table_body2').children().length
+                console.log(lent)
+                for (var i = 1; i <= lent; i++) {
+                    if (dataList[0].indexOf(parseInt(i)) >= 0) {
+                        $('#date_table_body2').find('tr').eq(i - 1).find('td').eq(2).text('X').addClass('red')
+                    } else {
+                        $('#date_table_body2').find('tr').eq(i - 1).find('td').eq(2).text('O').removeClass('red')
+                    }
+                }
+                for (var i = 1; i <= lent; i++) {
+                    if (dataList[1].indexOf(parseInt(i)) >= 0) {
+                        $('#date_table_body2').find('tr').eq(i - 1).find('td').eq(3).text('X').addClass('red')
+                    } else {
+                        $('#date_table_body2').find('tr').eq(i - 1).find('td').eq(3).text('O').removeClass('red')
+                    }
+                }
+            }
+        })
+    }
+
+    function btn_record(obj) {
+        var sno = $(obj).parent().parent().find('td').eq(1).text()
+        var meeting_room_no = $(obj).parent().parent().find('td').eq(2).text()
+        var apply_time = $(obj).parent().parent().find('td').eq(3).text()
+        var book_date = $(obj).parent().parent().find('td').eq(4).text()
+        var start_time = $(obj).parent().parent().find('td').eq(5).text()
+        var end_time = $(obj).parent().parent().find('td').eq(6).text()
+        var status = $(obj).parent().parent().find('td').eq(7).text()
+        var sendData = {
+            sno: sno,
+            meeting_room_no: meeting_room_no,
+            apply_time: apply_time
+        }
+        $.ajax({
+            url: "/dor/admin_handle/meeting_room_handle/show_meeting_room_applyments",
+            type: 'GET',
+            data: sendData,
+            success: function (data) {
+                $('#record_sno').text(data.sno)
+                $('#record_sname').text(data.sname)
+                $('#record_apply_time').text(data.apply_time)
+                $('#record_college').text(data.college)
+                $('#record_major').text(data.major)
+                $('#record_dor_room').text(data.room_no)
+                $('#record_phone_no').text(data.stu_phone)
+                $('#record_email').text(data.email)
+                $('#record_remark').text(data.stu_remark)
+
+                $('#record_meeting_room_no').text(meeting_room_no)
+                $('#record_book_time').text(book_date + ' ' + start_time + '-' + end_time)
+                $('#record_status').text(status)
+            }
+        })
+    }
+
+    function btn_handle_check(obj) {
+        var sno = $(obj).parent().parent().find('td').eq(1).text()
+        var meeting_room_no = $(obj).parent().parent().find('td').eq(2).text()
+        var apply_time = $(obj).parent().parent().find('td').eq(3).text()
+        var book_date = $(obj).parent().parent().find('td').eq(4).text()
+        var start_time = $(obj).parent().parent().find('td').eq(5).text()
+        var end_time = $(obj).parent().parent().find('td').eq(6).text()
+        var sendData = {
+            sno: sno,
+            meeting_room_no: meeting_room_no,
+            apply_time: apply_time
+        }
+        $.ajax({
+            url: "/dor/admin_handle/meeting_room_handle/show_meeting_room_applyments",
+            type: 'GET',
+            data: sendData,
+            success: function (data) {
+                console.log(data)
+                $('#dealt_sno').text(data.sno)
+                $('#dealt_sname').text(data.sname)
+                $('#dealt_apply_time').text(data.apply_time)
+                $('#dealt_college').text(data.college)
+                $('#dealt_major').text(data.major)
+                $('#dealt_dor_room').text(data.room_no)
+                $('#dealt_phone_no').text(data.stu_phone)
+                $('#dealt_email').text(data.email)
+                $('#dealt_stu_remark').text(data.stu_remark)
+
+                $('#dealt_meeting_room_no').text(meeting_room_no)
+                $('#dealt_book_time').text(book_date + ' ' + start_time + '-' + end_time)
+            }
+        })
+    }
+
+    function btn_handle(obj) {
+        var sno = $('#dealt_sno').text()
+        var meeting_room_no = $('#dealt_meeting_room_no').text()
+        var apply_time = $('#dealt_apply_time').text()
+        var ad_remark = $('#dealt_ad_remark').val()
+
+        {#        注意： status：   0-未处理，待审核     1-已通过     2-失败#}
+        var status = parseInt($('#dealt_select option:selected').val())
+
+        var sendData = {
+            sno: sno,
+            meeting_room_no: meeting_room_no,
+            apply_time: apply_time,
+            ad_remark: ad_remark,
+            status: status
+        }
+        if (status !== 0) {
+            $.ajax({
+                url: "dor/admin_handle/meeting_room_handle/handle_meeting_room_applyments",
+                type: 'GET',
+                data: sendData,
+                success: function (data) {
+                    alert(data)
+                    $('#adminDealtMeeting').hide()
+                },
+                error: function (e) {
+                    console.log(e)
+                }
+            })
+        }else {
+            alert("未进行操作，点击确认无效")
+        }
+
+
+    }
+
+    {#    获取系统当前日期#}
+    function getNowDate() {
+        var date = new Date();
+        var seperator1 = "-";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+        return currentdate;
+    }
+
+    {#    获取今天& 明天#}
+    function getDateStr(addDay) {
+        var dd = new Date();
+        dd.setDate(dd.getDate() + addDay);
+        var y = dd.getFullYear();
+        var m = dd.getMonth() + 1;
+        var d = dd.getDate();
+        return y + "-" + m + "-" + d;
+    }
+</script>

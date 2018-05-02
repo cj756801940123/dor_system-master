@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load  staticfiles %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="bootstrap/image/favicon.ico">
+
+    <title>宿舍管理系统 - 管理员主页</title>
+
+    <link rel="icon" href={% static 'bootstrap/image/favicon.ico' %}>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/admin.css' %}" rel="stylesheet" type="text/css">
+    <style>
+        .table tbody tr td {
+            vertical-align: middle;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">学生宿舍管理系统</a>
+            </div>
+
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+
+                    <li><a href="info_admin.html"><span class="glyphicon glyphicon-user"></span>{{ username }}老师</a></li>
+                    <li><a data-toggle="modal" data-target="#logout">注销</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+<!--列表部分不需要替换-->
+    <div class="container-fluid">
+        <div class="row">
+            <!--sidebar-->
+            <div class="col-sm-3 col-md-2 sidebar">
+                <ul class="nav nav-sidebar">
+                    <li><a href="/show_admin_index">宿舍退调申请处理</a></li>
+                    <li><a href="/show_admin_repair_index">宿舍报修申请处理</a></li>
+                    <li><a href="/show_admin_resource_index">宿舍资源申请处理</a></li>
+                    <li><a href="/show_admin_meeting_index">研讨室申请处理</a></li>
+                    <li><a href="/show_admin_activity_index">社区活动申请处理</a></li>
+                    <li  class="active"><a href="/show_admin_book_index">共享书屋</a></li>
+                    <li><a href="/show_admin_search_index">宿生信息检索</a></li>
+                    <li><a href="/show_admin_checkin_index">入宿处理</a></li>
+                    <li><a href="/show_admin_set_time_index">留校时间段设置</a></li>
+                </ul>
+            </div>
+            <!--./sidebar-->
+
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+                <h1 class="page-header">
+                    共享书屋
+                    <small>总共 42 本书</small>
+                    <div class="pull-right">
+                    </div>
+                </h1>
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active">
+                        <a href="#books" aria-controls="books" role="tab" data-toggle="tab">全部书籍</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#bookStore" aria-controls="bookStore" role="tab" data-toggle="tab">书籍入屋</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" style="margin-top: 10px">
+                    <!-- 全部书籍 -->
+                    <div role="tabpanel" class="tab-pane active" id="books">
+                        <form class="from" role="form" action="/dor/admin_handle/books_Manager" method="POST">
+                            <div class="row" style="padding: 15px 0"   >
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="col-md-4" style="padding-left: 0">
+
+                                            <div class="input-group">
+                                                <span class="input-group-addon">书名</span>
+                                                <input type="text" class="form-control" placeholder="书名" name="book_name" value="">
+                                            </div>
+                                        </div>
+                                        <!-- ./col-md-3 -->
+                                        <div class="col-md-4">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">书编号</span>
+                                                <input type="text" class="form-control" autocomplete="off" placeholder="书编号" name="book_id" value="">
+                                            </div>
+                                        </div>
+                                        <!-- ./col-md-2 -->
+                                        <div class="col-md-3">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">借书者</span>
+                                                <input type="text" class="form-control" placeholder="借书者" autocomplete="off" name="book_borrowman" value="">
+                                            </div>
+                                        </div>
+                                        <!-- ./col-md-3 -->
+                                        <button class="btn btn-primary" type="submit">检索</button>
+                                        <br>
+                                        <br>
+                                        <div class="col-md-4" style="padding-left: 0">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">作者</span>
+                                                <input type="text" class="form-control" placeholder="作者" autocomplete="off" name="book_author" value="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">贡献者</span>
+                                                <input type="text" class="form-control" placeholder="贡献者" autocomplete="off" name="contributor" value="">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="input-group">
+                                                <span class="input-group-addon">状态</span>
+                                                    <input type="text" class="form-control" placeholder="状态" autocomplete="off" name="book_borrow_state" value="">
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-danger" type="button">重置</button>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- /.row -->
+                        </form>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>编号</th>
+                                        <th>书名</th>
+                                        <th>作者</th>
+                                        <th>借阅次数</th>
+                                        <th>贡献者</th>
+                                        <th>借出状态</th>
+                                        <th>归还状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                        {% for item in book_list %}
+
+                                        <tr>
+                                            <td>{{ item.book_id }}</td>
+                                            <td>{{ item.book_name }}</td>
+                                            <td>{{ item.book_author}}</td>
+                                            <td>{{ item.book_borrow_time   }}</td>
+                                            <td>{{ item.contributor }}</td>
+
+                                            <td>
+                                                {% if item.book_borrow == "1" %}
+                                                    <span class="label label-danger"> 已借出 </span>
+                                                {% else %}
+                                                    <span class="label label-success"> 未借出 </span>
+                                                {% endif %}
+                                            </td>
+                                        {% if item.book_borrow_state == "1" %}
+                                            <td>
+                                                <span class="label label-danger">尚未归还</span>
+                                            </td>
+                                        {% else %}
+                                            <td>
+                                                <span class="label label-success">已经归还</span>
+                                            </td>
+                                        {% endif %}
+
+                                          <td>
+                                              <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#bookInfo{{ item.book_id }}"  >查看</button>
+                                              <button type="button" class="btn btn-success btn-xs" data-toggle="modal" data-target="#bookDelete{{ item.book_id }}">删除</button>
+                                          </td>
+
+                                        </tr>
+                                    {%endfor%}
+
+                                </tbody>
+                            </table>
+
+                            <div class="pull-right">
+                                <ul class="pagination">
+                                    <li>
+                                        <a href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>
+                                    <li><a href="#">5</a></li>
+                                    <li>
+                                        <a href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- ./pagination -->
+
+                        </div>
+                        <!-- /.table-responsive -->
+
+                    </div>
+                    <!-- /全部书籍 -->
+                        <!--新书入屋-->
+
+                    <div role="tabpanel" class="tab-pane" id="bookStore">
+
+                        <div class="table-responsive">
+                            <form class="form-horizontal" role="form" action="/books_Manager/insert_book"  id="insert"  method="POST">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <div class="col-md-4" style="padding-left: 100px">
+                                            <label class="control-label">书名:</label>
+                                            <input type="text" class="form-control" placeholder="书名" name="book_name" value="">
+                                        </div>
+                                        <!-- ./col-md-3 -->
+                                        <div class="col-md-4" style="padding-left: 50px">
+                                            <label class="control-label">作者:</label>
+                                            <input type="text" class="form-control" placeholder="作者" autocomplete="off" name="book_author" value="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4" style="padding-left: 100px">
+                                            <label class="control-label">借阅次数:</label>
+                                            <input type="text" class="form-control" placeholder="借阅次数" name="book_borrow_time" value="">
+                                        </div>
+                                        <!-- ./col-md-3 -->
+                                        <div class="col-md-4" style="padding-left: 50px">
+                                            <label class="control-label">关键词:</label>
+                                            <input type="text" class="form-control" placeholder="关键词" autocomplete="off" name="book_word" value="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-4" style="padding-left: 100px">
+                                            <label class="control-label">贡献者:</label>
+                                            <input type="text" class="form-control" placeholder="贡献者" name="contributor" value="">
+                                        </div>
+                                        <!-- ./col-md-3 -->
+                                        <div class="col-md-4" style="padding-left: 50px">
+                                            <label class="control-label">书编号:</label>
+                                            <input type="text" class="form-control" placeholder="书编号" autocomplete="off" name="book_id" value="">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-8" style="padding-left: 100px">
+                                            <label class="control-label">描述:</label>
+                                            <input textarea name="book_desc" value="" class="form-control" width="900px" placeholder="这本书......................................................................"></input textarea>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div class="col-md-2" style="padding-left: 500px">
+                                            <button type="button" class="btn btn-default btn-primary" >重置</button>
+                                        </div>
+                                        <div class="col-md-2" style="padding-left: 100px">
+                                            <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#checkInsert2">确定录入</button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </form>
+                        </div>
+
+
+                    </div>
+
+                </div>
+                <!-- /.tab-tab-content -->
+            </div>
+        </div>
+    </div>
+    <!--modal开始-->
+    {% for item in book_list %}
+    <div class="modal fade" tabindex="-1" role="dialog" id="bookInfo{{ item.book_id  }}" data-backdrop="static" >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                        <h4 class="modal-title">{{ item.book_name }}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-warning fade in" role="alert" id="modal-notify" style="display: none"></div>
+
+                    <div class="row">
+                        <form class="form-horizontal" id="form-operate">
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">书名</label>
+                                <div class="col-sm-10">
+                                    <p class="form-control-static"> {{ item.book_name }}</p>
+                                </div>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">状态</label>
+                                <div class="col-sm-10">
+                                    <p class="form-control-static">
+                                        {% if item.book_borrow == "1" %}
+                                            <span class="label label-danger">已借出</span>
+                                        {% else %}
+                                            <span class="label label-success">未借出</span>
+                                        {% endif %}
+
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">作者</label>
+                                <div class="col-sm-10">
+                                    <p class="form-control-static">{{ item.book_author }}</p>
+                                </div>
+                            </div>
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">分享者</label>
+                                <div class="col-sm-10">
+                                    <p class="form-control-static">{{ item.contributor }}</p>
+                                </div>
+                            </div>
+                            <!-- /.form-group -->
+                            <!-- /.form-group -->
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">描述</label>
+                                <div class="col-sm-9">
+                                    <p class="form-control-static" style="min-height: 60px">
+                                        {{ item.book_desc }}
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- /.form-group -->
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">借阅次数</label>
+                                <div class="col-sm-10">
+                                    <p class="form-control-static">
+                                        <span class="label label-info">{{ item.book_borrow_time }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- /.form-group -->
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ./bookInfo -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="bookDelete{{ item.book_id }}" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                    <h4 class="modal-title">借阅书籍</h4>
+                </div>
+                <div class="modal-body">
+                    <p>您确定要删除书名为{{ item.book_name }}的书籍么？</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="/books_Manager/Delete_book"  id="Delete{{ item.book_id }}"  method="POST">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="submit" class="btn btn-success" name="book_id" value="{{ item.book_id }}">确定</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- ./bookDelete -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="checkInsert{{ item.book_id }}" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title" id="myModalLabel" align="middle">书籍已经录入到数据库</h4>
+                </div>
+                <div class="modal-body">
+                    详细信息...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--modal结束-->
+    {% endfor %}
+    <!--注销modal-->
+    <div class="modal fade" tabindex="-1" role="dialog" id="logout" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                            class="sr-only">关闭</span></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p>是否注销？</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <a href="../index.html">
+                        <button type="button" class="btn btn-primary">确定</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Bootstrap core JavaScript
+      ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <!-- Bootstrap core JavaScript
+      ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+     <script type="text/javascript" src="{% static 'bootstrap/js/jquery-2.2.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+
+</body>
+
+</html>

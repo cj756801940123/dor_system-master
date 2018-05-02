@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load staticfiles %}
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="">
+	<meta name="author" content="">
+	<link rel="icon" href="../image/favicon.ico">
+
+	<title>宿舍退调申请 - 宿舍管理系统</title>
+
+    <link rel="icon" href={% static 'bootstrap/image/favicon.ico' %}>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/student.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/student.css' %}" rel="stylesheet" type="text/css">
+
+	<style>
+		.table tbody tr td {
+			vertical-align: middle;
+		}
+	</style>
+
+</head>
+
+<body>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+				 aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+				<a class="navbar-brand" href="#">学生宿舍管理系统</a>
+			</div>
+
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="info_student.html"><span class="glyphicon glyphicon-user"></span> {{ username }}同学</a></li>
+					<li><a href="#">注销</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+    <form action="/dor/student_handle/pay_bill/show_bill/" id="pay">
+    </form>
+    <form action="/show_stu_search_index/" id="activity">
+    </form>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-3 col-md-2 col-xs-3 sidebar" id="side">
+				<ul class="nav nav-sidebar">
+					<li class="active">
+						<a href="/show_student_index">宿舍退调申请</a>
+					</li>
+					<li>
+						<a href="/show_stu_repair_index">宿舍设施报修申请</a>
+					</li>
+					<li >
+						<a href="/show_stu_pay_index">生活缴费</a>
+					</li>
+					<li>
+						<a href="/show_stu_resource_index">宿舍资源申请</a>
+					</li>
+					<li>
+						<a href="/show_stu_meeting_index">研讨室申请</a>
+					</li>
+					<li onclick="apply_activity()">
+						<a href="/show_stu_activity_index">社区活动申请</a>
+					</li>
+					<li>
+						<a href="/show_stu_book_index">共享书屋<span class="sr-only">(current)</span></a>
+					</li>
+				</ul>
+			</div>
+            <p>{{ error }}</p>
+
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+				<h1 class="page-header">
+					宿舍退调申请
+					<div class="pull-right">
+						<button type="button" class="btn btn-info" data-toggle="modal" data-target="#func_change">申请调整</button>
+						<button type="button" class="btn btn-success" data-toggle="modal" data-target="#func_exit">申请退宿</button>
+						<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#func_stay">留校申请</button>
+					</div>
+				</h1>
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs" role="tablist">
+					<li role="presentation" class="active">
+						<a href="#change_record" aria-controls="change_record" role="tab" data-toggle="tab" >调宿申请记录</a>
+                    </li>
+					<li role="presentation">
+
+						<a href="#stay_record" aria-controls="stay_record" role="tab" data-toggle="tab">留校申请记录</a>
+
+                    </li>
+					<li role="presentation">
+						<a href="#exit_record" aria-controls="exit_record" role="tab" data-toggle="tab">退宿申请记录</a>
+					</li>
+				</ul>
+
+				<div class="tab-content" style="margin-top: 10px">
+					<!--调宿申请记录-->
+					<div role="tabpanel" class="tab-pane in active" id="change_record">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+									<tr>
+										<th>申请时间</th>
+                                        <th>学号</th>
+										<th>申请人</th>
+										<th>现住宿舍</th>
+										<th>经办人</th>
+										<th>状态</th>
+										<th>操作</th>
+									</tr>
+								</thead>
+								<tbody>
+                                {%  for i in DorChange %}
+                                 <tr>
+									<td>{{i.apply_time}}</td>
+                                     <td >{{ stu.sno }}</td>
+									<td>{{stu.sname}}</td>
+									<td>{{i.old_room_no}}</td>
+									<td>{{ i.ad_name }}</td>
+									<td><span class="label label-primary">{{ i.apply_status }}</span></td>
+									<td>
+										<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#check_change{{ i.sno }}{{ i.old_room_no }}" >查看</button>
+{#										<button type="button" class="btn btn-danger btn-xs" >取消</button>#}
+									</td>
+								</tr>
+                                {%endfor%}
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+					<!--留校申请记录-->
+					<div role="tabpanel" class="tab-pane" id="stay_record">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+								<tr>
+									<th>申请时间</th>
+									<th>申请人</th>
+									<th>现住宿舍</th>
+									<th>经办人</th>
+									<th>状态</th>
+									<th>操作</th>
+								</tr>
+								</thead>
+								<tbody>
+                                {% for m in LiveOnVacation %}
+								<tr>
+									<td>{{m.apply_time}}</td>
+									<td>{{stu.sname}}</td>
+									<td>{{stu.room_no}}</td>
+									<td>{{m.ad_name }}</td>
+									<td><span class="label label-primary">{{ m.apply_status }}</span></td>
+									<td>
+										<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#check_stay{{ m.id}}">查看</button>
+{#										<button type="button" class="btn btn-danger btn-xs">取消</button>#}
+									</td>
+								</tr>
+                                {% endfor %}
+
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<!--退宿申请记录-->
+					<div role="tabpanel" class="tab-pane" id="exit_record">
+						<div class="table-responsive">
+							<table class="table table-striped">
+								<thead>
+								<tr>
+									<th>申请时间</th>
+									<th>申请人</th>
+									<th>现住宿舍</th>
+									<th>经办人</th>
+									<th>状态</th>
+									<th>操作</th>
+								</tr>
+								</thead>
+								<tbody>
+                                {%  for i in DorCancel %}
+                                 <tr>
+									<td>{{i.apply_time}}</td>
+									<td>{{stu.sname}}</td>
+									<td>{{stu.room_no}}</td>
+									<td>{{ i.ad_name }}</td>
+									<td><span class="label label-primary">{{ i.apply_status }}</span></td>
+									<td>
+										<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#check_exit{{i.sno }}{{ i.new_room_no }}">查看</button>
+{#										<button type="button" class="btn btn-danger btn-xs">取消</button>#}
+									</td>
+								</tr>
+                                {%endfor%}
+								</tbody>
+							</table>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="func_change" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		<div class="modal-dialog" role="document" style="width:auto; max-width:1000px">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">申请调整</h4>
+				</div>
+				<div class="modal-body">
+                     <form action="/dor/student_handle/dor_applyment/change_dor_applyment/" id="apply_change" method="post" >
+						{% csrf_token %}
+                        <div class="row">
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">学号:</label>
+									<input type="text" class="form-control" name="sno" readonly="readonly" value={{ stu.sno }}>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">姓名:</label>
+									<input type="text" name="sname" class="form-control" readonly="readonly" value={{ stu.sname }}>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">学院:</label>
+							        <input type="text" name="college" class="form-control" readonly="readonly" value={{ stu.college }}>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">专业:</label>
+							        <input type="text" name="major" class="form-control" readonly="readonly" value={{ stu.major }}>
+								</div>
+							</div>
+
+							<div class="col-lg-5 col-md-5 col-sm-5 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">现住宿舍:</label>
+									<input type="text" name="old_dor_info"class="form-control" readonly="readonly" value={{ stu.room_no }}>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">申请时间:</label>
+									<input type="text" name="apply_time" class="form-control"  value=""/>
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">联系电话:</label>
+									<input type="text" name="phone" class="form-control" value={{ stu.stu_phone }}>
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">邮箱:</label>
+									<input type="text" class="form-control" value={{ stu.email }}>
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">拟申请宿舍:</label>
+									<input type="text" name="new_dor_info" class="form-control"  placeholder="书院号-宿舍号-床位号">
+								</div>
+							</div>
+
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group">
+									<label class="control-label">备注:</label>
+									<textarea name="reason" class="form-control" placeholder="如申请原因等"></textarea>
+								</div>
+							</div>
+						</div>
+                     </form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-success"onclick="submit_change_applyment()">确认申请</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- modal - 申请调整 -->
+
+	<div class="modal fade" id="func_exit" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		<div class="modal-dialog" role="document" style="width:auto; max-width:1000px">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">申请退宿</h4>
+				</div>
+				<div class="modal-body">
+					<form action="/dor/student_handle/dor_applyment/cancel_dor_applyment/" method="post" id="apply_cancel">
+                        {% csrf_token %}
+						<div class="row">
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">学号:</label>
+									<input type="text" name="sno" class="form-control" readonly="readonly" value={{ stu.sno }}>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">姓名:</label>
+                                    <input type="text" name="sname" class="form-control" readonly="readonly" value={{ stu.sname }}>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">学院:</label>
+									<input type="text" name="college" class="form-control" readonly="readonly" value={{ stu.college }}>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">专业:</label>
+							        <input type="text" name="major" class="form-control" readonly="readonly" value={{ stu.major }}>
+								</div>
+							</div>
+
+							<div class="col-lg-5 col-md-5 col-sm-5 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">现住宿舍:</label>
+                                    <input type="text" name="dor_info"class="form-control" readonly="readonly" value={{ stu.room_no }}>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">申请时间:</label>
+									<input type="text" name="apply_time" class="form-control"  value="">
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">联系电话:</label>
+									<input type="text" name="phone" class="form-control" value={{ stu.stu_phone }}>
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">邮箱:</label>
+									<input type="text" class="form-control" value={{ stu.email }}>
+								</div>
+							</div>
+
+							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">退宿原因:</label>
+                                    <input type="text" name="reason" class="form-control" value="">
+								</div>
+							</div>
+
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group">
+									<label class="control-label">备注:</label>
+									<textarea class="form-control"></textarea>
+								</div>
+							</div>
+						</div>
+
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-success" onclick="submit_cancel_applyment()">确认申请</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- modal - 申请退宿 -->
+
+	<div class="modal fade" id="func_stay" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		<div class="modal-dialog" role="document" style="width:auto; max-width:1000px">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">留校申请</h4>
+				</div>
+				<div class="modal-body">
+					<form action="/dor/student_handle/dor_applyment/live_on_vacation_applyment/" method="post" id="apply_live_on_vacation">
+                    {% csrf_token %}
+						<div class="row">
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">学号:</label>
+									<input type="text" name="sno" class="form-control" readonly="readonly" value={{ stu.sno }}>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">姓名:</label>
+									<input type="text" name="sname" class="form-control" readonly="readonly" value={{ stu.sname }}>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">学院:</label>
+									<input type="text" name="college" class="form-control" readonly="readonly" value={{ stu.college }}>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">专业:</label>
+							        <input type="text" name="major" class="form-control" readonly="readonly" value={{ stu.major }}>
+								</div>
+							</div>
+
+							<div class="col-lg-5 col-md-5 col-sm-5 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">现住宿舍:</label>
+                                    <input type="text" name="dor_info" class="form-control" readonly="readonly" value={{ stu.room_no }}>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">申请时间:</label>
+									<input type="text" name="apply_time" class="form-control"  value="2017-09-16 12:00">
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">联系电话:</label>
+									<input type="text" class="form-control" name="phone" value={{ stu.stu_phone }}>
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">邮箱:</label>
+									<input type="text" class="form-control" value={{ stu.email }}>
+								</div>
+							</div>
+
+							<div class="col-lg-5 col-md-5 col-sm-5 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">留校原因:</label>
+                                        <select class="combobox">
+                                            <option id="r0">-- 选择留校类别 --</option>
+                                            <option id="r1" value="学术研究和实验">学术研究和实验</option>
+                                            <option id="r2" value="公益项目和专项活动">公益项目和专项活动</option>
+                                            <option id="r3" value="考研和出国考试复习">考研和出国考试复习</option>
+                                            <option id="r4" value="其他">其他</option>
+                                        </select>
+								</div>
+							</div>
+
+
+
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group">
+									<label class="control-label">留校时间:</label>
+									<div class="checkbox">
+										<label><input id='time1' type="checkbox" value="">2017-07-04-2017-07-28</label>
+										<br>
+                                        <label><input id='time2' type="checkbox" value="">2017-07-29-2017-08-23</label>
+									</div>
+								</div>
+							</div>
+                            <input type="hidden" id="start_time" name="start_time" value=""/>
+                            <input type="hidden" id="end_time" name="end_time" value=""/>
+
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group">
+									<label class="control-label">备注:</label>
+									<textarea id="staying_reason" name="staying_reason" class="form-control"></textarea>
+								</div>
+							</div>
+						</div>
+
+					</form>
+				</div>
+
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button type="button" class="btn btn-success" onclick="submit_live_on_vacation()">确认申请</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- modal - 留校申请 -->
+
+    {% for i in DorChange %}
+	<div class="modal fade" id="check_change{{ i.sno }}{{ i.old_room_no }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		<div class="modal-dialog" role="document" style="width:auto; max-width:1000px">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">申请调整</h4>
+				</div>
+				<div class="modal-body">
+						<div class="row">
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">学号:</label>
+									<label class="control-label">{{ stu.sno }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">姓名:</label>
+									<label class="control-label">{{ stu.sname }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">学院:</label>
+									<label class="control-label">{{ stu.college }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">专业:</label>
+									<label class="control-label">{{ stu.major }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-5 col-md-5 col-sm-5 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">现住宿舍:</label>
+									<label class="control-label">{{ stu.room_no }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">申请时间:</label>
+									<label class="control-label">{{ i.apply_time }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">联系电话:</label>
+									<label class="control-label">{{ stu.stu_phone }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">邮箱:</label>
+									<label class="control-label">{{ stu.email }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">拟申请宿舍:</label>
+									<label class="control-label">{{ i.new_room_no }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group">
+									<label class="control-label">备注:</label>
+									<p>{{ i.reason }}</p>
+								</div>
+							</div>
+
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group">
+									<label class="control-label">状态：</label>
+									<label class="label label-primary">{{ i.apply_status }}</label>
+								</div>
+							</div>
+
+						</div>
+
+				</div>
+
+{#				<div class="modal-footer">#}
+{#					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>#}
+{#					<button type="button" class="btn btn-primary">确认</button>#}
+{#				</div>#}
+			</div>
+		</div>
+	</div>
+ {% endfor %}
+
+	<!-- modal - 查看调整 -->
+{%  for i in DorCancel %}
+	<div class="modal fade" id="check_exit{{ i.sno }}{{ i.new_room_no }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		<div class="modal-dialog" role="document" style="width:auto; max-width:1000px">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">申请退宿</h4>
+				</div>
+				<div class="modal-body">
+					<form>
+
+						<div class="row">
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">学号:</label>
+									<label class="control-label">{{ stu.sno }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">姓名:</label>
+									<label class="control-label">{{ stu.sname }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">学院:</label>
+									<label class="control-label">{{ stu.college }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">专业:</label>
+									<label class="control-label">{{ stu.major }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-5 col-md-5 col-sm-5 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">现住宿舍:</label>
+									<label class="control-label">{{ stu.room_no }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">申请时间:</label>
+									<label class="control-label">{{ i.apply_time}}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">联系电话:</label>
+									<label class="control-label">{{ stu.stu_phone }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">邮箱:</label>
+									<label class="control-label">{{ stu.email }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">退宿原因:</label>
+									<p>{{ i.reason }}</p>
+								</div>
+							</div>
+
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group">
+									<label class="control-label">备注:</label>
+									<p>这是学生备注这是学生备注这是学生备注这是学生备注这是学生备注这是学生备注这是学生备注这是学生备注</p>
+								</div>
+							</div>
+
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group">
+									<label class="control-label">状态：</label>
+									<label class="label label-primary">{{ i.apply_status }}</label>
+								</div>
+							</div>
+						</div>
+
+					</form>
+				</div>
+
+{#				<div class="modal-footer">#}
+{#					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>#}
+{#					<button type="button" class="btn btn-primary">确认</button>#}
+{#				</div>#}
+			</div>
+		</div>
+	</div>
+    {% endfor %}
+	<!-- modal - 查看退宿 -->
+{% for i in LiveOnVacation %}
+	<div class="modal fade" id="check_stay{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+		<div class="modal-dialog" role="document" style="width:auto; max-width:1000px">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title">留校申请</h4>
+				</div>
+				<div class="modal-body">
+					<form>
+
+						<div class="row">
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">学号:</label>
+									<label class="control-label">{{ stu.sno }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">姓名:</label>
+									<label class="control-label">{{ stu.sname }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">学院:</label>
+									<label class="control-label">{{ stu.college }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">专业:</label>
+									<label class="control-label">{{ stu.major }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-5 col-md-5 col-sm-5 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">现住宿舍:</label>
+									<label class="control-label">{{ stu.room_no }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">申请时间:</label>
+									<label class="control-label">{{ i.apply_time }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">联系电话:</label>
+									<label class="control-label">{{ stu.stu_phone }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">邮箱:</label>
+									<label class="control-label">{{ stu.email }}</label>
+								</div>
+							</div>
+
+							<div class="col-lg-5 col-md-5 col-sm-5 col-xs-6">
+								<div class="form-group">
+									<label class="control-label">留校原因:</label>
+									<label class="control-label">{{ i.reason }}</label>
+								</div>
+							</div>
+
+
+
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group">
+									<label class="control-label">留校时间:</label>
+									<div class="checkbox">
+										<label>{{ i.start_time }}</label>
+										<br>
+										<label>{{ i.end_time }}</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group">
+									<label class="control-label">备注:</label>
+									<p>这是学生的申请备注这是学生的申请备注这是学生的申请备注这是学生的申请备注这是学生的申请备注这是学生的申请备注</p>
+								</div>
+							</div>
+
+							<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+								<div class="form-group">
+									<label class="control-label">状态：</label>
+									<label class="label label-primary">{{ i.apply_status }}</label>
+								</div>
+							</div>
+						</div>
+
+					</form>
+				</div>
+
+{#				<div class="modal-footer">#}
+{#					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>#}
+{#					<button type="button" class="btn btn-primary">确认</button>#}
+{#				</div>#}
+			</div>
+		</div>
+	</div>
+    {% endfor %}
+	<!-- modal - 查看留校 -->
+
+
+	<!-- Bootstrap core JavaScript
+      ================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="../js/jquery-2.2.1.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+	<script src="../js/holder.min.js"></script>
+  <script type="text/javascript" src="{% static 'bootstrap/js/jquery-2.2.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap/js/holder.min.js' %}"></script>
+</body>
+<script>
+    function submit_change_applyment(){
+        document.getElementById("apply_change").submit();
+    }
+    function submit_cancel_applyment()
+    {
+        document.getElementById("apply_cancel").submit();
+    }
+    function submit_live_on_vacation() {
+
+        var option1=document.getElementById('time1');
+        var option2=document.getElementById('time2');
+        var str;
+        var rr0=document.getElementById('r0')
+        var rr1=document.getElementById('r1');
+        var rr2=document.getElementById('r2');
+        var rr3=document.getElementById('r3');
+        var rr4=document.getElementById('r4');
+        if(rr0.selected)
+        {
+            alert("必须选择留校原因！");
+        }
+        else if(rr1.selected)
+        {
+            document.getElementById('staying_reason').value=rr1.value;
+        }
+        else if(rr2.selected)
+        {
+            document.getElementById('staying_reason').value=rr2.value;
+        }
+        else if(rr3.selected)
+        {
+            document.getElementById('staying_reason').value=rr3.value;
+        }
+
+        if(option1.checked==true&&option2.checked==true)
+        {
+            document.getElementById('start_time').value='2017-07-04';
+            document.getElementById('end_time').value='2017-08-23';
+
+        }else if(option1.checked&&!option2.checked)
+        {
+            document.getElementById('start_time').value='2017-07-04';
+            document.getElementById('end_time').value='2017-07-28';
+        }else if(!option1.checked&&option2.checked)
+        {
+            document.getElementById('start_time').value='2017-07-29';
+            document.getElementById('end_time').value='2017-08-23';
+        }
+
+        document.getElementById("apply_live_on_vacation").submit();
+    }
+
+    function show_change_dor_log(){
+        document.getElementById("change_dor_log").submit();
+    }
+    function show_dor_change_detail()
+    {
+
+        document.getElementById("change_dor_detail").submit();
+    }
+    function pay()
+    {
+       document.getElementById("pay").submit();
+    }
+
+     function apply_activity()
+    {
+       document.getElementById("activity").submit();
+    }
+</script>
+</html>

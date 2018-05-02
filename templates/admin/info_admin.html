@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load staticfiles %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../image/favicon.ico">
+
+    <title>个人信息 - 宿舍管理系统</title>
+
+
+     <link rel="icon" href={% static 'bootstrap/image/favicon.ico' %}>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/admin.css' %}" rel="stylesheet" type="text/css">
+
+
+    <style>
+        .table tbody tr td {
+            vertical-align: middle;
+        }
+    </style>
+
+</head>
+
+<body>
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">学生宿舍管理系统</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#"><span class="glyphicon glyphicon-user"></span>{{ username }}老师</a></li>
+                <li><a data-toggle="modal" data-target="#logout">注销</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a href="/show_admin_index">宿舍退调申请处理</a></li>
+                <li><a href="/show_admin_repair_index">宿舍报修申请处理</a></li>
+                <li><a href="/show_admin_resource_index">宿舍资源申请处理</a></li>
+                <li><a href="/show_admin_meeting_index">研讨室申请处理</a></li>
+                <li><a href="/show_admin_activity_index">社区活动申请处理</a></li>
+                <li><a href="/show_admin_book_index">共享书屋</a></li>
+                <li><a href="/show_admin_search_index">宿生信息检索</a></li>
+                <li><a href="/show_admin_checkin_index">入宿处理</a></li>
+                <li><a href="/show_admin_set_time_index">留校时间段设置</a></li>
+            </ul>
+        </div>
+
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+
+            <h1 class="page-header">
+                个人信息
+                <div class="pull-right">
+                    <button type="button" class="btn btn-info">保存信息</button>
+                </div>
+            </h1>
+
+            <form>
+                <div class="row">
+                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label">工号:</label>
+                            <input type="text" class="form-control" readonly="readonly" value="585855858">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label">姓名:</label>
+                            <input type="text" class="form-control" readonly="readonly" value="李新">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label">性别:</label>
+                            <input type="text" class="form-control" readonly="readonly" value="男">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label">联系电话:</label>
+                            <input type="text" class="form-control" value="185209292388">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                        <div class="form-group">
+                            <label class="control-label">邮箱:</label>
+                            <input type="text" class="form-control" value="xli@stu.edu.cn">
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+            <hr>
+            <form>
+                <div class="row">
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">账号</span>
+                            <input type="text" class="form-control" autocomplete="off" placeholder="账号"
+                                   readonly="readonly" value="xli">
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                        <div class="input-group">
+                            <span class="input-group-addon">密码</span>
+                            <input type="text" class="form-control" autocomplete="off" placeholder="仅可修改不可查看">
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+
+        </div>
+    </div>
+</div>
+
+<!--注销modal-->
+<div class="modal fade" tabindex="-1" role="dialog" id="logout" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                        class="sr-only">关闭</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>是否注销？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <a href="../index.html">
+                    <button type="button" class="btn btn-primary">确定</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap core JavaScript
+  ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="../js/jquery-2.2.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+<script src="../js/holder.min.js"></script>
+     <script type="text/javascript" src="{% static 'bootstrap/js/jquery-2.2.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.js' %}"></script>
+
+</body>
+
+</html>

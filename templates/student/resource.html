@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load staticfiles %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../image/favicon.ico">
+
+    <title>宿舍资源申请 - 宿舍管理系统</title>
+
+
+ <link rel="icon" href={% static 'bootstrap/image/favicon.ico' %}>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/student.css' %}" rel="stylesheet" type="text/css">
+
+
+
+
+
+    <style>
+        .table {
+            table-layout: fixed;
+        }
+
+        .table tbody tr td {
+            vertical-align: middle;
+        }
+
+        td.desc {
+            overflow: hidden;
+            text-overflow:ellipsis;
+            white-space: nowrap;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+                <a class="navbar-brand" href="#">学生宿舍管理系统</a>
+            </div>
+
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="student/info_student.html"><span class="glyphicon glyphicon-user"></span> {{ username }} 同学</a></li>
+                    <li><a href="#">注销</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 col-xs-3 sidebar" id="side">
+                <ul class="nav nav-sidebar">
+                    <li>
+                        <a href="/show_student_index">宿舍退调申请</a>
+                    </li>
+                    <li>
+                        <a href="/show_stu_repair_index">宿舍设施报修申请</a>
+                    </li>
+                    <li>
+                        <a href="/show_stu_pay_index">生活缴费</a>
+                    </li>
+                    <li class="active">
+                        <a href="/show_stu_resource_index">宿舍资源申请</a>
+                    </li>
+                    <li>
+                        <a href="/show_stu_meeting_index">研讨室申请</a>
+                    </li>
+                    <li>
+                        <a href="/show_stu_activity_index">社区活动申请</a>
+                    </li>
+                    <li>
+                        <a href="/show_stu_book_index">共享书屋<span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+
+                <h1 class="page-header">
+                    宿舍资源申请
+                </h1>
+
+
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs" role="tablist">
+
+                    <li role="presentation" class="active">
+                        <a href="#key_borrow_record" aria-controls="key_borrow_record" role="tab" data-toggle="tab">钥匙借用记录</a>
+                    </li>
+                    <li role="presentation">
+                        <a href="#ac_borrow_record" aria-controls="ac_borrow_record" role="tab" data-toggle="tab">空调遥控器借用记录</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" style="margin-top: 10px">
+
+                    <div role="tabpanel" class="tab-pane in active" id="key_borrow_record">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>编号</th>
+                                        <th>申请人学号</th>
+                                        <th>申请人姓名</th>
+                                        <th>借用时间</th>
+                                        <th>经办人</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for item in resource_list %}
+                                    {% if item.item == "钥匙" %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.sno }}</td>
+                                        <td>{{ item.name }}</td>
+                                        <td>{{ item.now }}</td>
+                                        <td>{{ item.ad_no }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#func_reason{{ item.id }}">借用原因</button>
+                                            <button type="button" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#func_remark{{ item.id }}">查看备注</button>
+                                        </td>
+
+                                    </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+
+                            <div class="pull-right">
+                                <ul class="pagination">
+                                    <li>
+                                        <a href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>
+                                    <li><a href="#">5</a></li>
+                                    <li>
+                                        <a href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- ./pagination -->
+                    </div>
+                    <!-- /.tab-pane -->
+
+
+                    <div role="tabpanel" class="tab-pane" id="ac_borrow_record">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>编号</th>
+                                        <th>申请人学号</th>
+                                        <th>申请人姓名</th>
+                                        <th>借用时间</th>
+                                        <th>经办人</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                {% for item in resource_list %}
+                                    {% if item.item == "空调遥控器" %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.sno }}</td>
+                                        <td>{{ username }}</td>
+                                        <td>{{ item.now }}</td>
+                                        <td>{{ item.ad_no }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#func_reason{{ item.id }}">借用原因</button>
+                                            <button type="button" class="btn btn-warning btn-xs" data-toggle="modal" data-target="#func_remark{{ item.id }}">查看备注</button>
+                                        </td>
+
+                                    </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="pull-right">
+                            <ul class="pagination">
+                                <li>
+                                    <a href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="active"><a href="#">1</a></li>
+                                <li><a href="#">2</a></li>
+                                <li><a href="#">3</a></li>
+                                <li><a href="#">4</a></li>
+                                <li><a href="#">5</a></li>
+                                <li>
+                                    <a href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- ./pagination -->
+                    </div>
+                    <!-- /.tab-pane -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% for item in resource_list %}
+    <div class="modal fade" id="func_reason{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog" role="document" style="width:auto; max-width:1000px">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">借用原因</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+
+                            <div class="row">
+
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <p>{{ item.reason }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+        <!-- modal - 借用原因 -->
+    {% for item in resource_list %}
+    <div class="modal fade" id="func_remark{{ item.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+            <div class="modal-dialog" role="document" style="width:auto; max-width:1000px">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">查看备注</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+
+                            <div class="row">
+
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <p>{{ item.remark }}</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+        <!-- modal - 查看备注 -->
+
+
+    <!-- Bootstrap core JavaScript
+      ================================================== -->
+
+     <script type="text/javascript" src="{% static 'bootstrap/js/jquery-2.2.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+</body>
+
+</html>

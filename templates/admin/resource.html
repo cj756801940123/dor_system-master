@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load staticfiles %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../image/favicon.ico">
+
+    <script language="javascript" type="text/javascript">
+        function time() {
+    var date = new Date();
+    var seperator1 = "-";
+    var seperator2 = ":";
+    var month = date.getMonth() + 1;
+    var strDate = date.getDate();
+    if (month >= 1 && month <= 9) {
+        month = "0" + month;
+    }
+    if (strDate >= 0 && strDate <= 9) {
+        strDate = "0" + strDate;
+    }
+
+    document.getElementById("return_time").value=date.getFullYear()+seperator1+month+seperator1+strDate+" "
+                                                +date.getHours() + seperator2 + date.getMinutes();
+    document.getElementById("now").value=date.getFullYear()+seperator1+month+seperator1+strDate+" "
+                                                +date.getHours() + seperator2 + date.getMinutes();
+    document.getElementById("now2").value=date.getFullYear()+seperator1+month+seperator1+strDate+" "
+                                                +date.getHours() + seperator2 + date.getMinutes();
+
+}
+    </script>
+
+    <title>资源申请处理 - 宿舍管理系统</title>
+
+     <link rel="icon" href={% static 'bootstrap/image/favicon.ico' %}>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/admin.css' %}" rel="stylesheet" type="text/css">
+
+
+
+
+</head>
+
+<body onload="time()">
+<nav class="navbar navbar-inverse navbar-fixed-top">
+
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false"
+                    aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">学生宿舍管理系统</a>
+        </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+
+                <li><a href="info_admin.html"><span class="glyphicon glyphicon-user"></span> {{ username }} 老师</a></li>
+                <li><a data-toggle="modal" data-target="#logout">注销</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                <li><a href="/show_admin_index">宿舍退调申请处理</a></li>
+                <li><a href="/show_admin_repair_index">宿舍报修申请处理</a></li>
+                <li class="active"><a href="/show_admin_resource_index">宿舍资源申请处理</a></li>
+                <li><a href="/show_admin_meeting_index">研讨室申请处理</a></li>
+                <li><a href="/show_admin_activity_index">社区活动申请处理<span class="sr-only">(current)</span></a></li>
+                <li><a href="/show_admin_book_index">共享书屋</a></li>
+                <li><a href="/show_admin_search_index">宿生信息检索</a></li>
+                <li><a href="/show_admin_checkin_index">入宿处理</a></li>
+                <li><a href="/show_admin_set_time_index">留校时间段设置</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+            <h1 class="page-header">
+                宿舍资源申请处理
+                <div class="pull-right">
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#func_key">借用钥匙</button>
+                    <button type="button" class="btn btn-success" data-toggle="modal" data-target="#func_ac">借用空调遥控器</button>
+                </div>
+            </h1>
+            <ul class="nav nav-tabs">
+                <li class="active">
+                    <a href="#needToDealt" data-toggle="tab">
+                        待办事项
+                    </a>
+                </li>
+                <li>
+                    <a href="#log" data-toggle="tab">
+                        记录
+                    </a>
+                </li>
+            </ul>
+            <div class="tab-content" style="margin-top: 10px">
+                <!--待办事项 panel-->
+                <div class="tab-pane in active" id="needToDealt">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>学号</th>
+                                <th>申请人</th>
+                                <th>现住宿舍</th>
+                                <th>资源名称</th>
+                                <th>借用时间</th>
+                                <th>资源状态</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in resource_list %}
+                                {% if item.status == 1 %}
+                                    <tr>
+                                        <td>{{ item.id }}</td>
+                                        <td>{{ item.sno }}</td>
+                                        <td>{{ item.sname }}</td>
+                                        <td>{{ item.room_no }}</td>
+                                        <td>{{ item.item }}</td>
+                                        <td>{{ item.now }}</td>
+                                        <td><label class="label label-danger">已借出</label></td>
+                                        <td>
+                                            <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#adminDealtResource{{ item.id }}">
+                                                归还</button>
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <div class="pull-right">
+                            <ul class="pagination">
+                                <li>
+                                    <a href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="active"><a href="#">1</a></li>
+                                <li><a href="#">2</a></li>
+                                <li><a href="#">3</a></li>
+                                <li><a href="#">4</a></li>
+                                <li><a href="#">5</a></li>
+                                <li>
+                                    <a href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <!--记录 panel-->
+                <div class="tab-pane" id="log">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th>编号</th>
+                                <th>学号</th>
+                                <th>申请人</th>
+                                <th>现住宿舍</th>
+                                <th>资源名称</th>
+                                <th>申请时间</th>
+                                <th>资源状态</th>
+                                <th>详情</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for item in resource_list %}
+                                {% if item.status == 0 %}
+                            <tr>
+                                <td>{{ item.id }}</td>
+                                <td>{{ item.sno }}</td>
+                                <td>{{ item.sname }}</td>
+                                <td>{{ item.room_no }}</td>
+                                <td>{{ item.item }}</td>
+                                <td>{{ item.now }}</td>
+                                <td>
+                                    <label class="label label-success">已归还</label>
+                                </td>
+                                <td>
+                                    <button class="btn btn-primary btn-xs" data-toggle="modal"
+                                            data-target="#adminResourceLog{{ item.id }}" >
+                                        查看
+                                    </button>
+                                </td>
+                            </tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tbody>
+                        </table>
+
+                        <div class="pull-right">
+                            <ul class="pagination">
+                                <li>
+                                    <a href="#" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="active"><a href="#">1</a></li>
+                                <li><a href="#">2</a></li>
+                                <li><a href="#">3</a></li>
+                                <li><a href="#">4</a></li>
+                                <li><a href="#">5</a></li>
+                                <li>
+                                    <a href="#" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--待办事项modal-->
+{% for tobeshow in resource_list %}
+<div class="modal fade" tabindex="-1" role="dialog" id="adminDealtResource{{ tobeshow.id }}">
+    <div class="modal-dialog" style="width:auto; max-width:1000px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                        class="sr-only">关闭</span></button>
+                <h4 class="modal-title">资源归还</h4>
+            </div>
+            <div class="modal-body">
+        <form action="dor/admin_handle/device_handle/commit_return_device/{{ tobeshow.id }}&{{ username }}" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label">学号:</label>
+                        <label class="control-label">{{ tobeshow.sno }}</label>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label">姓名:</label>
+                        <label class="control-label">{{ tobeshow.sname }}</label>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label">宿舍:</label>
+                        <label class="control-label">{{ tobeshow.room_no }}</label>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label">联系电话:</label>
+                        <label class="control-label">{{ tobeshow.phone }}</label>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                    <div class="form-group">
+                        <label class="control-label">邮箱:</label>
+                        <label class="control-label">{{ tobeshow.mail }}</label>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">原因:</label>
+                        <label class="control-label">{{ tobeshow.reason }}</label>
+                    </div>
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">申请时间:</label>
+                        <label class="control-label">{{ tobeshow.now }}</label>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">归还时间:</label>
+                        <input type="text" class="form-control" id="return_time" name="return_time">
+                    </div>
+                </div>
+
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                    <div class="form-group">
+                        <label class="control-label">资源名称:</label>
+                        <label class="label label-success">{{ tobeshow.item }}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button  type="submit" class="btn btn-primary">确认归还</button>
+            </div>
+        </form>
+    </div>
+        </div>
+
+    </div>
+</div>
+{% endfor %}
+<!--记录modal-->
+{% for item in resource_list %}
+<div class="modal fade" tabindex="-1" role="dialog" id="adminResourceLog{{ item.id }}">
+    <div class="modal-dialog" style="width:auto; max-width:1000px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                        class="sr-only">关闭</span></button>
+                <h4 class="modal-title">申请记录查看</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">学号:</label>
+                                <label class="control-label">{{ item.sno }}</label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">姓名:</label>
+                                <label class="control-label">{{ item.sname }}</label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">宿舍:</label>
+                                <label class="control-label">{{ item.room_no }}</label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">联系电话:</label>
+                                <label class="control-label">{{ item.phone }}</label>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">邮箱:</label>
+                                <label class="control-label">{{ item.mail }}</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">备注:</label>
+                                <label class="control-label">{{ item.remark }}</label>
+                            </div>
+                        </div>
+                        <hr/>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">申请时间:</label>
+                                <label class="control-label">{{ item.now }}</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">归还时间:</label>
+                                <label class="control-label">{{ item.return_time }}</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">资源名称:</label>
+                                <label class="label label-primary">{{ item.item }}</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">申请状态:</label>
+                                <label class="label label-success">成功</label>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">资源状态:</label>
+                                <label class="label label-success">已归还</label>
+                            </div>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!--注销modal-->
+<div class="modal fade" tabindex="-1" role="dialog" id="logout" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                        class="sr-only">关闭</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>是否注销？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <a href="../index.html">
+                    <button type="button" class="btn btn-primary">确定</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="func_key" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width:auto; max-width:1000px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">借用钥匙</h4>
+            </div>
+            <div class="modal-body">
+                <form action="dor/admin_handle/device_handle/borrow_key_applyments" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">申请人学号:</label>
+                                <input type="text" class="form-control" name="sno">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">申请人姓名:</label>
+                                <input type="text" class="form-control" name="name">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">借用时间:</label>
+                                <input type="text" class="form-control" id="now" name="now">
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">现住宿舍:</label>
+                                <input type="text" class="form-control" name="room_no">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">借用原因:</label>
+                                <textarea class="form-control" name="reason"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">备注:</label>
+                                <textarea class="form-control" name="remark"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">确认借用</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal - 借用钥匙 -->
+
+
+<div class="modal fade" id="func_ac" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" role="document" style="width:auto; max-width:1000px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title">借用空调遥控器</h4>
+            </div>
+            <div class="modal-body">
+                <form action="dor/admin_handle/device_handle/borrow_minitor_applyments" method="post">
+                    {% csrf_token %}
+                    <div class="row">
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">申请人学号:</label>
+                                <input type="text" class="form-control" name="sno">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">申请人姓名:</label>
+                                <input type="text" class="form-control" name="name">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">借用时间:</label>
+                                <input type="text" class="form-control" id="now2" name="now">
+                            </div>
+                        </div>
+
+
+                        <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                            <div class="form-group">
+                                <label class="control-label">现住宿舍:</label>
+                                <input type="text" class="form-control" name="room_no">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">借用原因:</label>
+                                <textarea class="form-control" name="reason"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="form-group">
+                                <label class="control-label">备注:</label>
+                                <textarea class="form-control" name="remark"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">确认借用</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal - 借用空调 -->
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+
+     <script type="text/javascript" src="{% static 'bootstrap/js/jquery-2.2.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+
+</body>
+
+</html>

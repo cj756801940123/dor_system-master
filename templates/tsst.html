@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="/show_index/" id="f1" method="post">
+    {% csrf_token %}
+    <input type="text" name="aa">{{ data }}
+    <input type="button" value="确定" onclick="ff()">
+</form>
+<form action="/show_index/" id="f2" method="get">
+    <input type="text" name="bb">{{ data }}
+    <input type="button" value="确定" onclick="ff()">
+
+</form>
+</body>
+<script>
+    function ff()
+    {
+        document.getElementById("f1").submit();
+    }
+</script>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {%  load staticfiles %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../image/favicon.ico">
+
+    <title>社区活动申请 - 宿舍管理系统</title>
+
+
+ <link rel="icon" href={% static 'bootstrap/image/favicon.ico' %}>
+    <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'bootstrap/css/student.css' %}" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+    <style>
+        .table tbody tr td {
+            vertical-align: middle;
+        }
+    </style>
+
+</head>
+
+<body>
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false"
+                    aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+                <a class="navbar-brand" href="#">学生宿舍管理系统</a>
+            </div>
+
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="info_student.html"><span class="glyphicon glyphicon-user"></span>{{ sname }} 同学</a></li>
+                    <li><a href="#">注销</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-3 col-md-2 col-xs-3 sidebar" id="side">
+                <ul class="nav nav-sidebar">
+                    <li>
+                        <a href="/show_student_index">宿舍退调申请</a>
+                    </li>
+                    <li>
+                        <a href="/show_stu_repair_index">宿舍设施报修申请</a>
+                    </li>
+                    <li>
+                        <a href="/show_stu_pay_index">生活缴费</a>
+                    </li>
+                    <li>
+                        <a href="/show_stu_resource_index">宿舍资源申请</a>
+                    </li>
+                    <li>
+                        <a href="/show_stu_meeting_index">研讨室申请</a>
+                    </li>
+                    <li class="active">
+                        <a href="/show_stu_activity_index">社区活动申请</a>
+                    </li>
+                    <li>
+                        <a href="/show_stu_book_index">共享书屋<span class="sr-only">(current)</span></a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+
+
+                <h1 class="page-header">
+                    社区活动申请
+                </h1>
+
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#activities" data-toggle="tab">
+                            现在进行中
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#activityLog" data-toggle="tab">
+                            申请记录
+                        </a>
+                    </li>
+                </ul>
+
+
+
+                <div class="tab-content" style="margin-top: 10px">
+                    <!--现在进行中 panel-->
+
+                    <div class="tab-pane in active" id="activities">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <td>活动编号</td>
+                                    <th>活动名称</th>
+                                    <td>活动举办方</td>
+                                    <th>举办时间</th>
+                                    <td>申请截止时间</td>
+                                    <td>操作</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in activity %}
+                                <tr>
+                                    <td>{{ i.activity_no }}</td>
+                                    <td>{{ i.activity_name }}</td>
+                                    <td>{{ i.host_no }}</td>
+                                    <td>{{ i.activity_time }}</td>
+                                    <td>{{ i.last_apply_time }}</td>
+                                    <td>
+                                        <button  class="btn btn-success btn-xs" data-toggle="modal"
+                                               onclick="checkactivityinfo(this)">
+                                            申请
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                                </tbody>
+                            </table>
+
+                            <div class="pull-right">
+                                <ul class="pagination">
+                                    <li>
+                                        <a href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>
+                                    <li><a href="#">5</a></li>
+                                    <li>
+                                        <a href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--申请记录 panel-->
+                    <div class="tab-pane" id="activityLog">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                <tr>
+                                    <th>活动编号</th>
+                                    <th>活动名称</th>
+                                    <th>申请时间</th>
+                                    <th>经办人</th>
+                                    <th>状态</th>
+                                    <th>操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for i in activity_log %}
+                                <tr>
+                                    <td>{{ i.actvity_no }}</td>
+                                    <td>{{ i.activity_name}}</td>
+                                    <td>{{ i.apply_time }}</td>
+                                    <td>{{ i.ad_no }}</td>
+                                    <td><span class="label label-primary">{{ i.apply_status }}</span></td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#detail_1">查看</button>
+{#                                        <button type="button" class="btn btn-danger btn-xs">取消</button>#}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <div class="pull-right">
+                                <ul class="pagination">
+                                    <li>
+                                        <a href="#" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    <li class="active"><a href="#">1</a></li>
+                                    <li><a href="#">2</a></li>
+                                    <li><a href="#">3</a></li>
+                                    <li><a href="#">4</a></li>
+                                    <li><a href="#">5</a></li>
+                                    <li>
+                                        <a href="#" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="func_activity" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document" style="width:auto; max-width:1000px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">申请活动</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">学号:</label>
+                                    <input id="sno" class="form-control" readonly="readonly" value={{ sno }}>
+                                 </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">姓名:</label>
+                                    <input id="sname" class="form-control" readonly="readonly" value={{ sname }}>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">学院:</label>
+                                    <input id="college" class="form-control" readonly="readonly" value={{ college }}>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">专业:</label>
+                                    <input id="major" class="form-control" readonly="readonly" value={{ major }}>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">现住宿舍:</label>
+                                    <input id="dor_no" class="form-control" readonly="readonly" value={{ room_no }}>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">申请时间:</label>
+                                    <input type="text" name="apply_time" class="form-control" readonly="readonly" placeholder="2017-2-12 12:00">
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">联系电话:</label>
+                                    <input type="text" name="phone" class="form-control" value={{ stu_phone }}>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">邮箱:</label>
+                                    <input type="text" id="email" class="form-control"  readonly="readonly" value={{ email }}>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <hr/>
+                    <form action="/dor/student_handle/activity_applyment/activity_applyment/" id="aaa" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">活动编号:</label>
+                                    <input id="activity_no" name="aact_no" class="form-control" readonly="readonly" value={{ activity_no }}>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">活动名称:</label>
+                                    <input id="activity_name" class="form-control" readonly="readonly" value={{ activity_name }}>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">活动举办方:</label>
+                                    <input id="host_no" class="form-control" readonly="readonly" value={{ host_no }}>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">活动举办时间:</label>
+                                   <input id="activity_time" class="form-control" readonly="readonly" value={{ activity_time }}>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">人数限制:</label>
+                                    <input id="activity_max_participate" class="form-control" readonly="readonly" value={{ activity_max_participate }}>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">截止申请时间:</label>
+                                    <input id="last_apply_time" class="form-control" readonly="readonly" >
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                <div class="form-group">
+                                    <label class="control-label">活动描述:</label>
+                                    <input id="activity_description" class="form-control" readonly="readonly" >
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="apply_activity()">确认申请</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal - 申请活动 -->
+
+
+    <div class="modal fade" id="detail_1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document" style="width:auto; max-width:800px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">详细信息</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+
+                        <!-- 反正只写一个 for each, 因为不同申请项显示的条目是不同的 -->
+                        <div class="row">
+                            <div class="col-lg-3 col-md-3 col-sm-4 col-xs-6">
+                                <div class="form-group">
+                                    <label class="control-label">学号:</label>
+                                    <br> 2014101027
+                                </div>
+                            </div>
+                            <!-- ︿(￣︶￣)︿ -->
+                            <!-- 这里继续补充吧, 复制就OK -->
+                            <!-- 活动编号, 活动名称, 活动举办方, 活动时间, 活动截止时间, 人数限制, 申请人, 申请时间, 经办人, 申请状态, 活动描述, 备注 -->
+                            <!-- 注意可能还有失败原因 -->
+                        </div>
+
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal - 查看 -->
+
+
+
+    <!-- Bootstrap core JavaScript
+      ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../js/jquery-2.2.1.min.js"></script>
+    <script src="../js/bootstrap.min.js"></script>
+    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+    <script src="../js/holder.min.js"></script>
+    <script type="text/javascript" src="{% static 'bootstrap/js/jquery-2.2.1.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'bootstrap/js/holder.min.js' %}"></script>
+</body>
+<script>
+    function apply_activity(){
+        document.getElementById("aaa").submit();
+    }
+    function checkactivityinfo(obj) {
+        var act = $(obj).parent().parent().find('td');
+        var act_no = act.eq(0).text();
+        $.ajax({
+            url:"/dor/student_handle/activity_applyment/show_activity_info/",
+            type:"POST",
+            data:{act_no:act_no},
+            success:function(res){
+                $('#activity_no').val(res.activity_no),
+                $('#activity_name').val(res.activity_name),
+                $('#host_no').val(res.host_no),
+                $('#activity_time').val(res.activity_time),
+                $('#activity_description').val(res.activity_description),
+                $('#activity_max_participate').val(res.activity_max_participate),
+                $('#last_apply_time').val(res.last_apply_time)
+            },
+
+        });
+        $('#func_activity').modal('show')
+
+    }
+
+
+</script>
+
+</html>
